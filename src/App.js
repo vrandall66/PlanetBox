@@ -1,5 +1,6 @@
 import React from 'react';
 import IdeasContainer from './Components/IdeasContainer/IdeasContainer'
+import IdeaForm from './Components/IdeaForm/IdeaForm';
 import './App.css';
 
 class App extends React.Component {
@@ -13,16 +14,29 @@ class App extends React.Component {
       ]
     }
   }
+
   componentDidMount() {
     fetch('https://swapi.co/api/planets/')
     .then(response => response.json())
     .then(data => this.setState({ideas: data.results}))
   }
 
+  handleDelete = (name) => {
+    let updatedPlanets = this.state.ideas.filter(planet => planet.name !== name);
+    this.setState({ideas: updatedPlanets})
+  }
+
+  handleAddPlanet = (e, planet) => {
+    e.preventDefault();
+    let newPlanets = [...this.state.ideas, planet]
+    this.setState({ ideas: newPlanets })
+  }
+
   render() {
     return (
       <main>
-      <IdeasContainer ideas={this.state.ideas}/>
+        <IdeaForm handleAddPlanet={this.handleAddPlanet}/>
+        <IdeasContainer ideas={this.state.ideas} handleDelete={this.handleDelete}/>
       </main>
     )
   }
